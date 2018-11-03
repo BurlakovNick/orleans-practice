@@ -1,0 +1,22 @@
+﻿@using FlightsBookingWeb.Models
+@model LoginForm
+
+@{
+    ViewData["Title"] = "Login Page";
+}
+
+<div>
+    <h1>Login</h1>
+
+    @using (Html.BeginForm("GetFlight", "Flight", FormMethod.Get))
+    {
+        <div>
+            Enter username
+        </div>
+
+        @Html.HiddenFor(x => x.FlightId)
+        @Html.TextBox("userId", "")
+
+        <button type="submit">Login</button>
+    }
+</div>

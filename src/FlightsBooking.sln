@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightsBooking", "FlightsBo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightsBookingTests", "FlightsBookingTests\FlightsBookingTests.csproj", "{92C795E4-BC7B-459B-9608-A6D6F6376608}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightsBookingWeb", "FlightsBookingWeb\FlightsBookingWeb.csproj", "{3C439425-C144-4090-B6A6-4419AFF89AA7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightsBookingClient", "FlightsBookingClient\FlightsBookingClient.csproj", "{A534E4F8-9568-4430-9B3B-A17A37352A46}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{92C795E4-BC7B-459B-9608-A6D6F6376608}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92C795E4-BC7B-459B-9608-A6D6F6376608}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92C795E4-BC7B-459B-9608-A6D6F6376608}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C439425-C144-4090-B6A6-4419AFF89AA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C439425-C144-4090-B6A6-4419AFF89AA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C439425-C144-4090-B6A6-4419AFF89AA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C439425-C144-4090-B6A6-4419AFF89AA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A534E4F8-9568-4430-9B3B-A17A37352A46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A534E4F8-9568-4430-9B3B-A17A37352A46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A534E4F8-9568-4430-9B3B-A17A37352A46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A534E4F8-9568-4430-9B3B-A17A37352A46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

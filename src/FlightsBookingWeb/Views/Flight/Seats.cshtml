@@ -1,0 +1,52 @@
+﻿@model FlightsBookingWeb.Models.SeatRowViewModel[]
+
+<table border="1">
+    @foreach (var row in Model)
+    {
+        <tr>
+            @for (var i = 0; i < row.Seats.Length; i ++)
+            {
+                var seat = row.Seats[i];
+                var id = seat.Id;
+                var color = seat.IsHoldByMe ? "aqua" : (seat.IsBusy ? "blue" : "white");
+
+                <td id="@id" 
+                    onclick="clickOnSeat(this.id)" 
+                    ondblclick="doubleClickOnSeat(this.id)" 
+                    style="background-color: @color">
+                    @id
+                </td>
+
+                if ((i + 1) % 3 == 0 && i + 1 < row.Seats.Length)
+                {
+                    <td width="20">
+                    </td>
+                }
+            }
+        </tr>
+    }
+</table>
+
+<script type="text/javascript">
+    function clickOnSeat(seatId) {
+        var flightId = $('#Id').val();
+        var userId = $('#UserId').val();
+
+        $.post("/Flight/HoldSeat", { flightId: flightId, userId: userId, seatId: seatId }, function(data) {
+            if (data.success) {
+                $('#error').text('');
+            } else {
+                $('#error').text(data.message);
+            }
+        });
+
+        $('#seats').load('/Flight/GetFlightSeats?flightId=' + flightId + '&userId=' + userId);
+    }
+
+    function doubleClickOnSeat(seatId) {
+        var flightId = $('#Id').val();
+        var userId = $('#UserId').val();
+
+        $('#seats').load('/Flight/GetFlightSeats?flightId=' + flightId + '&userId=' + userId);
+    }
+</script>

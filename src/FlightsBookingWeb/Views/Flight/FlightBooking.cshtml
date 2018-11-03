@@ -1,0 +1,42 @@
+﻿@model FlightsBookingWeb.Models.FlightBookingViewModel
+
+@{
+    ViewData["Title"] = "Flight Page";
+}
+
+<div>
+    <h1>
+        Flight num. @Model.Number
+    </h1>
+    
+    <div>
+        <b>Departure: </b> @Model.Date
+    </div>
+    
+    <div>
+        <b>Choose your seat:</b>
+    </div>
+    
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.UserId)
+    
+    <div id="error" style="color: red; font-weight: bold;">
+    </div>
+
+    <div id="seats">
+        @Html.Partial("Seats", Model.Rows)
+    </div>
+</div>
+
+<script src="/js/jquery-3.3.1.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        setInterval(
+            function () {
+                var flightId = $('#Id').val();
+                var userId = $('#UserId').val();
+
+                $('#seats').load('/Flight/GetFlightSeats?flightId=' + flightId + '&userId=' + userId);
+            }, 1000);
+    });
+</script>
