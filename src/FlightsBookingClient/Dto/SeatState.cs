@@ -1,4 +1,4 @@
-﻿namespace FlightsBooking.Dto
+﻿namespace FlightsBookingClient.Dto
 {
     public enum SeatState
     {

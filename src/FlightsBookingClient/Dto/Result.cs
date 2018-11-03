@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FlightsBooking.Dto
+namespace FlightsBookingClient.Dto
 {
     public class Result
     {

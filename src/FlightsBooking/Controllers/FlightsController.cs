@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FlightsBooking.Dto;
 using FlightsBooking.Model;
+using FlightsBookingClient.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Orleans;
 
@@ -23,7 +23,13 @@ namespace FlightsBooking.Controllers
         [HttpGet]
         public async Task<FlightDto[]> GetFlights()
         {
-            var flightIds = new [] { Guid.Parse("F33B139B-F2E7-41B7-9DE5-502ADCA58B73")};
+            var flightIds = new []
+            {
+                Guid.Parse("F33B139B-F2E7-41B7-9DE5-502ADCA58B73"),
+                Guid.Parse("25277C64-3632-4D2E-BC52-224591368AD7"),
+                Guid.Parse("7E7DD011-A73F-4065-8193-2DA25AAB2DDB"),
+                Guid.Parse("1256F1E4-38A2-4E27-BA09-E7A459B98718"),
+            };
 
             return await Task.WhenAll(
                 flightIds.Select(id =>

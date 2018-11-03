@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace FlightsBooking.Dto
+namespace FlightsBookingClient.Dto
 {
     public class SeatDto
     {
@@ -19,5 +19,8 @@ namespace FlightsBooking.Dto
 
         [JsonProperty("held-until")]
         public DateTime? HeldUntil { get; set; }
+
+        [JsonProperty("held-by-user-id")]
+        public string HeldByUserId { get; set; }
     }
 }

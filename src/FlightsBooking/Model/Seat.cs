@@ -1,5 +1,5 @@
 ﻿using System;
-using FlightsBooking.Dto;
+using FlightsBookingClient.Dto;
 
 namespace FlightsBooking.Model
 {
@@ -12,11 +12,11 @@ namespace FlightsBooking.Model
         public DateTime? HeldUntil { get; set; }
         public string HeldByUserId { get; set; }
 
-        public bool CanHold() => IsFree();
+        public bool CanHold(string userId) => IsFree() || IsHeldBy(userId);
 
         public void Hold(string userId, TimeSpan holdTime)
         {
-            if (!CanHold())
+            if (!CanHold(userId))
             {
                 throw new InvalidOperationException("Can't hold seat!");
             }
@@ -47,6 +47,21 @@ namespace FlightsBooking.Model
                 return;
             }
 
+            if (State == SeatState.TemporarilyHeld)
+            {
+                State = SeatState.Free;
+                HeldByUserId = null;
+                HeldUntil = null;
+            }
+        }
+
+        public void TryFreeExpired()
+        {
+            if (State == SeatState.Free)
+            {
+                return;
+            }
+
             if (State == SeatState.TemporarilyHeld && HeldUntil <= DateTime.UtcNow)
             {
                 State = SeatState.Free;
@@ -55,11 +70,10 @@ namespace FlightsBooking.Model
             }
         }
 
+        public bool IsHeldBy(string userId) => State == SeatState.TemporarilyHeld &&
+                                               HeldByUserId == userId;
+
         private bool IsFree() => State == SeatState.Free ||
                                  State == SeatState.TemporarilyHeld && HeldUntil <= DateTime.UtcNow;
-
-        private bool IsHeldBy(string userId) => State == SeatState.TemporarilyHeld &&
-                                                HeldUntil > DateTime.UtcNow &&
-                                                HeldByUserId == userId;
     }
 }

@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FlightsBookingClient\FlightsBookingClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

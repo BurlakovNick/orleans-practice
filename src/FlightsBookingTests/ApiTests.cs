@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FlightsBooking.Dto;
+using FlightsBookingClient;
+using FlightsBookingClient.Dto;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -39,6 +40,31 @@ namespace FlightsBookingTests
         }
 
         [Test]
+        public async Task Test_Hold_Another_Seat()
+        {
+            var flightId = Guid.NewGuid();
+            var seatId1 = "1A";
+            var seatId2 = "1B";
+
+            await AssertFlightState(flightId, seatId1, SeatState.Free);
+            await AssertFlightState(flightId, seatId2, SeatState.Free);
+
+            var actual = await flightsClient.HoldSeatAsync(flightId, seatId1, "luke");
+            actual.IsSuccess.Should().BeTrue();
+            await AssertFlightState(flightId, seatId1, SeatState.TemporarilyHeld);
+
+            actual = await flightsClient.HoldSeatAsync(flightId, seatId2, "luke");
+            actual.IsSuccess.Should().BeTrue();
+            await AssertFlightState(flightId, seatId1, SeatState.Free);
+            await AssertFlightState(flightId, seatId2, SeatState.TemporarilyHeld);
+
+            actual = await flightsClient.BuySeatAsync(flightId, seatId1, "luke");
+            actual.IsSuccess.Should().BeTrue();
+            await AssertFlightState(flightId, seatId1, SeatState.Busy);
+            await AssertFlightState(flightId, seatId2, SeatState.Free);
+        }
+
+        [Test]
         public async Task Test_Seats_Are_Free_After_Hold_Time()
         {
             var flightId = Guid.NewGuid();
@@ -57,7 +83,7 @@ namespace FlightsBookingTests
 
             await ForEachSeat(async seat =>
             {
-                var flight = await flightsClient.GetFlight(flightId);
+                var flight = await flightsClient.GetFlightAsync(flightId);
                 flight.Seats.Single(x => x.Id == seat).State.Should().Be(SeatState.Free);
             });
 
@@ -72,7 +98,7 @@ namespace FlightsBookingTests
 
         private async Task AssertFlightState(Guid flightId, string seatId, SeatState expected)
         {
-            var flight = await flightsClient.GetFlight(flightId);
+            var flight = await flightsClient.GetFlightAsync(flightId);
             flight.Seats.Single(x => x.Id == seatId).State.Should().Be(expected);
         }
     }

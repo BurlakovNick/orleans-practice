@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using FlightsBooking.Dto;
+using FlightsBookingClient.Dto;
 using Orleans;
 
 namespace FlightsBooking.Model

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FlightsBooking.Dto;
+using FlightsBookingClient.Dto;
 using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Providers;
@@ -78,7 +78,8 @@ namespace FlightsBooking.Model
                             Row = s.Row,
                             Number = s.Number,
                             State = s.State,
-                            HeldUntil = s.HeldUntil
+                            HeldUntil = s.HeldUntil,
+                            HeldByUserId = s.HeldByUserId
                         })
                         .ToArray()
                 });
@@ -86,20 +87,12 @@ namespace FlightsBooking.Model
 
         public async Task<Result> HoldSeatAsync(string userId, string seatId, int holdSeconds)
         {
-            var seat = State.Seats.FirstOrDefault(s => s.Id == seatId);
-            if (seat == null)
-            {
-                return Result.Fail("Seat not found");
-            }
-
-            if (!seat.CanHold())
-            {
-                return Result.Fail("Seat is busy");
-            }
-
             var holdTime = TimeSpan.FromSeconds(holdSeconds);
-
-            seat.Hold(userId, holdTime);
+            var result = State.TryHold(userId, seatId, holdTime);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
 
             RegisterFreeSeatsTimerIfNeed();
 
@@ -109,18 +102,11 @@ namespace FlightsBooking.Model
 
         public async Task<Result> BuySeatAsync(string userId, string seatId)
         {
-            var seat = State.Seats.FirstOrDefault(s => s.Id == seatId);
-            if (seat == null)
+            var result = State.TryBuy(userId, seatId);
+            if (!result.IsSuccess)
             {
-                return Result.Fail("Seat not found");
+                return result;
             }
-
-            if (!seat.CanBuy(userId))
-            {
-                return Result.Fail("Seat is busy");
-            }
-
-            seat.Buy(userId);
 
             await WriteStateAsync();
             return Result.Success();
@@ -132,7 +118,7 @@ namespace FlightsBooking.Model
 
             if (State.HasHeldSeats)
             {
-                State.FreeSeats();
+                State.FreeExpiredSeats();
             }
 
             if (!State.HasHeldSeats)

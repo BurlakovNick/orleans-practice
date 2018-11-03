@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using FlightsBooking.Dto;
+using FlightsBookingClient.Dto;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Deserializers;
 using ISerializer = RestSharp.Serializers.ISerializer;
 
-namespace FlightsBookingTests
+namespace FlightsBookingClient
 {
     public class FlightsClient
     {
@@ -17,7 +17,7 @@ namespace FlightsBookingTests
         public FlightsClient(bool needLogging = false)
         {
             this.needLogging = needLogging;
-            client = new RestClient("http://localhost:52362/api/flights");
+            client = new RestClient("http://localhost:5000/api/flights");
 
             //note: https://bytefish.de/blog/restsharp_custom_json_serializer/
             client.AddHandler("application/json", Serializer.Instance);
@@ -27,15 +27,21 @@ namespace FlightsBookingTests
             client.AddHandler("*+json", Serializer.Instance);
         }
 
-        public Task<FlightDto> GetFlight(Guid flightId)
+        public Task<FlightDto[]> GetFlightsAsync()
         {
-            var request = new RestRequest($"{flightId}", Method.GET, DataFormat.Json);
+            var request = new RestRequest();
+            return ExecuteAsync<FlightDto[]>(request);
+        }
+
+        public Task<FlightDto> GetFlightAsync(Guid flightId)
+        {
+            var request = new RestRequest($"{flightId}", Method.GET);
             return ExecuteAsync<FlightDto>(request);
         }
 
         public Task<Result> HoldSeatAsync(Guid flightId, string seatId, string userId, int? holdSeconds = null)
         {
-            var request = new RestRequest($"{flightId}/seat/{seatId}/hold", Method.POST, DataFormat.Json);
+            var request = new RestRequest($"{flightId}/seat/{seatId}/hold", Method.POST);
             request.AddQueryParameter("userId", userId);
             if (holdSeconds.HasValue)
             {
@@ -46,7 +52,7 @@ namespace FlightsBookingTests
 
         public Task<Result> BuySeatAsync(Guid flightId, string seatId, string userId)
         {
-            var request = new RestRequest($"{flightId}/seat/{seatId}/buy", Method.POST, DataFormat.Json);
+            var request = new RestRequest($"{flightId}/seat/{seatId}/buy", Method.POST);
             request.AddQueryParameter("userId", userId);
             return ExecuteAsync<Result>(request);
         }
@@ -77,24 +83,6 @@ namespace FlightsBookingTests
             Log($"Result: {response.Content}");
             
             return response.Data;
-        }
-
-        private async Task<IRestResponse> ExecuteAsync(RestRequest request)
-        {
-            request.RequestFormat = DataFormat.Json;
-            request.JsonSerializer = Serializer.Instance;
-
-            Log($"Executing {request.Resource}");
-
-            var response = await client.ExecuteTaskAsync(request);
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new InvalidOperationException($"Status code is {response.StatusCode}");
-            }
-
-            Log($"Executed {request.Resource}");
-
-            return response;
         }
 
         private void Log(string message)
