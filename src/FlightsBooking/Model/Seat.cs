@@ -73,6 +73,8 @@ namespace FlightsBooking.Model
         public bool IsHeldBy(string userId) => State == SeatState.TemporarilyHeld &&
                                                HeldByUserId == userId;
 
+        public bool IsBoughtBy(string userId) => State == SeatState.Busy && HeldByUserId == userId;
+
         private bool IsFree() => State == SeatState.Free ||
                                  State == SeatState.TemporarilyHeld && HeldUntil <= DateTime.UtcNow;
     }

@@ -15,6 +15,11 @@ namespace FlightsBooking.Model
 
         public Result TryHold(string userId, string seatId, TimeSpan holdTime)
         {
+            if (Seats.Where(x => x.Id != seatId).Any(s => s.IsBoughtBy(userId)))
+            {
+                return Result.Fail("You already have your seat!");
+            }
+
             var seat = Seats.FirstOrDefault(s => s.Id == seatId);
             if (seat == null)
             {
@@ -33,6 +38,11 @@ namespace FlightsBooking.Model
 
         public Result TryBuy(string userId, string seatId)
         {
+            if (Seats.Where(x => x.Id != seatId).Any(s => s.IsBoughtBy(userId)))
+            {
+                return Result.Fail("You already have your seat!");
+            }
+
             var seat = Seats.FirstOrDefault(s => s.Id == seatId);
             if (seat == null)
             {
