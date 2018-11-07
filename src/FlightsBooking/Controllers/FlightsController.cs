@@ -25,10 +25,9 @@ namespace FlightsBooking.Controllers
         {
             var flightIds = new []
             {
-                Guid.Parse("F33B139B-F2E7-41B7-9DE5-502ADCA58B73"),
-                Guid.Parse("25277C64-3632-4D2E-BC52-224591368AD7"),
-                Guid.Parse("7E7DD011-A73F-4065-8193-2DA25AAB2DDB"),
-                Guid.Parse("1256F1E4-38A2-4E27-BA09-E7A459B98718"),
+                Guid.Parse("8D3707DE-1A6A-449A-B935-AA8F039EE56D"),
+                Guid.Parse("AC40C336-C58B-4369-BACD-9682CAE0A067"),
+                Guid.Parse("EBFB351A-8C98-48E9-B23B-BAD413960DD9"),
             };
 
             return await Task.WhenAll(
