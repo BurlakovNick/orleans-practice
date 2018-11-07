@@ -8,7 +8,7 @@
             {
                 var seat = row.Seats[i];
                 var id = seat.Id;
-                var color = seat.IsHoldByMe ? "aqua" : (seat.IsBusy ? "blue" : "white");
+                var color = seat.IsHoldByMe ? (seat.IsBought ? "green" : "aqua") : (seat.IsBusy ? "blue" : "white");
 
                 <td id="@id" 
                     onclick="clickOnSeat(this.id)" 
@@ -46,6 +46,14 @@
     function doubleClickOnSeat(seatId) {
         var flightId = $('#Id').val();
         var userId = $('#UserId').val();
+
+        $.post("/Flight/BuySeat", { flightId: flightId, userId: userId, seatId: seatId }, function (data) {
+            if (data.success) {
+                $('#error').text('');
+            } else {
+                $('#error').text(data.message);
+            }
+        });
 
         $('#seats').load('/Flight/GetFlightSeats?flightId=' + flightId + '&userId=' + userId);
     }

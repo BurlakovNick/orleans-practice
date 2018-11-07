@@ -78,6 +78,13 @@ namespace FlightsBookingWeb.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> BuySeat(Guid flightId, string userId, string seatId)
+        {
+            var result = await flightsClient.BuySeatAsync(flightId, seatId, userId).ConfigureAwait(true);
+            return Ok(result);
+        }
+
         private static SeatRowViewModel[] BuildSeats(string userId, FlightDto flight)
         {
             return flight.Seats
@@ -88,6 +95,7 @@ namespace FlightsBookingWeb.Controllers
                     Seats = seatRow.Select(seat => new SeatViewModel
                         {
                             IsBusy = seat.State != SeatState.Free,
+                            IsBought = seat.State == SeatState.Busy,
                             IsHoldByMe = seat.HeldByUserId == userId,
                             Number = seat.Number,
                             Row = seat.Row
