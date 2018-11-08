@@ -58,5 +58,19 @@ namespace FlightsBooking.Controllers
             var recipientGrain = clusterClient.GetGrain<IFlightGrain>(flightId);
             return await recipientGrain.BuySeatAsync(userId, seatId).ConfigureAwait(true);
         }
+
+        [HttpPost("{flightId}/seat/{seatId}/free")]
+        public async Task<Result> FreeSeat(Guid flightId, string seatId, [FromQuery] string userId)
+        {
+            try
+            {
+                var recipientGrain = clusterClient.GetGrain<IFlightGrain>(flightId);
+                return await recipientGrain.FreeSeatAsync(userId, seatId).ConfigureAwait(true);
+            }
+            catch (NotImplementedException)
+            {
+                return Result.Fail("Method is not implemented");
+            }
+        }
     }
 }

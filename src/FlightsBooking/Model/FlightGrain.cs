@@ -12,16 +12,17 @@ namespace FlightsBooking.Model
     public class FlightGrain : Grain<Flight>, IFlightGrain
     {
         private readonly ILogger logger;
+        private readonly IFlightFactory flightFactory;
         private IDisposable freeSeatsTimer;
 
         public FlightGrain(
-            ILogger<FlightGrain> logger
+            ILogger<FlightGrain> logger,
+            IFlightFactory flightFactory
             )
         {
             this.logger = logger;
+            this.flightFactory = flightFactory;
         }
-
-        //todo: сделать логирование с помощью фильтров
 
         public override async Task OnActivateAsync()
         {
@@ -31,29 +32,7 @@ namespace FlightsBooking.Model
             {
                 Log("New flight, let's initialize state");
 
-                var random = new Random();
-                State = new Flight
-                {
-                    IsActivated = true,
-                    Number = new string(Enumerable
-                        .Range(0, 5)
-                        .Select(i => (char) ((int) '0' + random.Next(0, 10)))
-                        .ToArray()),
-                    Date = DateTime.UtcNow,
-                    Seats = Enumerable
-                        .Range(1, 10)
-                        .SelectMany(row => Enumerable
-                            .Range(0, 6)
-                            .Select(seat => new Seat
-                            {
-                                Row = row,
-                                Number = ((char) ('A' + seat)).ToString(),
-                                State = SeatState.Free,
-                                HeldUntil = null,
-                                HeldByUserId = null
-                            }))
-                        .ToArray()
-                };
+                State = flightFactory.Create();
             }
 
             RegisterFreeSeatsTimerIfNeed();
@@ -110,6 +89,11 @@ namespace FlightsBooking.Model
 
             await WriteStateAsync();
             return Result.Success();
+        }
+
+        public Task<Result> FreeSeatAsync(string userId, string seatId)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task FreeSeats(object args)

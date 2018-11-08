@@ -1,7 +1,9 @@
 ﻿using System;
+using FlightsBooking.Model;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
@@ -30,7 +32,11 @@ namespace FlightsBooking
                         options.UseJsonFormat = true;
                     })
                     .AddMemoryGrainStorageAsDefault()
-                    .ConfigureLogging(logging => logging.AddNLog());
+                    .ConfigureLogging(logging => logging.AddNLog())
+                    .ConfigureServices(services =>
+                        {
+                            services.AddSingleton<IFlightFactory, FlightFactory>();
+                        });
 
                 using (var host = siloBuilder.Build())
                 {

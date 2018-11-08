@@ -9,5 +9,6 @@ namespace FlightsBooking.Model
         Task<FlightDto> GetFlightAsync();
         Task<Result> HoldSeatAsync(string userId, string seatId, int holdSeconds);
         Task<Result> BuySeatAsync(string userId, string seatId);
+        Task<Result> FreeSeatAsync(string userId, string seatId);
     }
 }
